@@ -1,6 +1,8 @@
 #!/bin/python
 
 import argparse
+import helpers
+import database
 
 
 def parse_args():
@@ -24,4 +26,8 @@ def parse_args():
 
 
 if __name__ == '__main__':
+    # Debugging
     parse_args()
+    print helpers.get_current_directory()
+    db = database.DBWrapper('notes.sqlite')
+    print db.test()
