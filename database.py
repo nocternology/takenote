@@ -1,5 +1,7 @@
 import sqlite3
 
+# TODO : Add checks for already existing paths/categories
+
 
 class DBWrapper():
 
@@ -20,16 +22,17 @@ class DBWrapper():
         self.cursor.execute(sql_create_paths)
 
     def create_category(self, category):
-        pass
+        self.cursor.execute(sql_add_category, category)
+        return self.cursor.lastrowid
 
     def create_path(self, path):
-        pass
+        self.cursor.execute(sql_add_path, path)
+        return self.cursor.lastrowid
 
     def create_note(self, note, category, path):
-        pass
+        self.create_category(category)
+        self.create_path(path)
 
-    def test(self):
-        return "OKAY"
 
 sql_create_notes = """
 CREATE  TABLE  IF NOT EXISTS "main"."NOTES" (
@@ -51,7 +54,10 @@ CREATE  TABLE "main"."PATHS" (
     "path" TEXT DEFAULT "/")
 """
 
-sql_add_note = """
+sql_add_category = """
+INSERT INTO "main"."CATEGORIES" ("content") VALUES (?)
+"""
 
-
+sql_add_path = """
+INSERT INTO "main"."PATHS" ("path") VALUES (?)
 """
