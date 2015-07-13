@@ -30,4 +30,7 @@ if __name__ == '__main__':
     parse_args()
     print helpers.get_current_directory()
     db = database.DBWrapper('notes.sqlite')
-    print db.test()
+    print db.create_path("/home/lol")
+    print db.create_category("TODO")
+    print db.create_note("This is a test note", "TODO", "/home/testing")
+    db.close()
