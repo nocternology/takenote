@@ -52,9 +52,21 @@ class DBWrapper():
 
         return self.cursor.lastrowid
 
+    def get_notes_by_path(self, path, recursive=False):
+        """
+        Gets notes for the given path. The recursive argument is to see
+        if we need to get subsequenced paths.
+        """
+
+        if recursive is True:
+            self.cursor.execute(sql_get_notes_by_path_recursive, [path])
+        else:
+            self.cursor.execute(sql_get_notes_by_path, [path])
+
+        return self.cursor.fetchall()
+
     def close(self):
         self.conn.close()
-
 
 sql_create_notes = """
 CREATE  TABLE  IF NOT EXISTS "main"."NOTES" (
@@ -94,4 +106,30 @@ SELECT * FROM "main"."CATEGORIES" WHERE "content" = ?
 
 sql_get_path = """
 SELECT * FROM "main"."PATHS" WHERE "path" = ?
+"""
+
+sql_get_notes_by_path = """
+SELECT
+    N.content, C.content
+FROM
+    NOTES  N, PATHS P, CATEGORIES C
+WHERE
+    P.path_id = N.path_id AND
+    C.cat_id = N.cat_id AND
+    P.path = ?
+GROUP BY
+    N.cat_id;
+"""
+
+sql_get_notes_by_path_recursive = """
+SELECT
+    N.content, C.content
+FROM
+    NOTES  N, PATHS P, CATEGORIES C
+WHERE
+    P.path_id = N.path_id AND
+    C.cat_id = N.cat_id AND
+    P.path LIKE ?
+GROUP BY
+    N.cat_id;
 """

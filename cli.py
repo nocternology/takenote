@@ -21,6 +21,12 @@ def parse_args():
         type=str)
 
     parser.add_argument(
-        "-l", "--list", help="list notes", action="store_true")
+        "-l", "--list", help="list notes for current path",
+        action="store_true")
+    parser.add_argument(
+        "-lr", "--listrecursive", help="list notes for current path \
+        and subpaths", action="store_true")
 
     args = parser.parse_args()
+
+    return args
