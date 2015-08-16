@@ -25,7 +25,7 @@ def parse_args():
     add_parser.add_argument(
         '-c', '--cat', action='store', help='Category of the new note')
     add_parser.add_argument(
-        '-n', '--note', action='store', help='Note to be added')
+        'note', metavar='note', nargs='+', help='Note to be added')
 
     # Delete note
     del_parser = subparsers.add_parser('del', help='Deletes a note')
@@ -55,4 +55,4 @@ def parse_callback(args):
     if (args.subparser == 'del'):
         pass
     if (args.subparser == 'add'):
-        notes.add_note(args.note, args.cat)
+        notes.add_note(' '.join(args.note), args.cat)
