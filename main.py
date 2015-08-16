@@ -3,7 +3,7 @@ import helpers
 import database
 
 # Defines
-DEFAULT_DB_FILE = "/home/ghandalf/Work/projects/takenote/notes.sqlite"
+DEFAULT_DB_FILE = "/home/nocternology/Work/takenote/notes.sqlite"
 
 # Main Handler
 if __name__ == '__main__':
