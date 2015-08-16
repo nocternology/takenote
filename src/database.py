@@ -14,13 +14,11 @@ class DBWrapper():
         self.conn = sqlite3.connect(file)
         self.cursor = self.conn.cursor()
 
-    def db_create(self, file):
+    def db_create(self):
         self.cursor.execute(sql_create_notes)
         self.cursor.execute(sql_create_categories)
-        self.cursor.execute(sql_create_paths)
 
     def create_category(self, category):
-        # Category exists ?
         self.cursor.execute(sql_get_category, [category])
         tcat = self.cursor.fetchone()
 
@@ -31,47 +29,37 @@ class DBWrapper():
         else:
             return tcat[0]
 
-    def create_path(self, path):
-        # Path exists ?
-        self.cursor.execute(sql_get_path, [path])
-        tpath = self.cursor.fetchone()
-
-        if tpath is None:
-            self.cursor.execute(sql_add_path, [path])
-            self.conn.commit()
-            return self.cursor.lastrowid
-        else:
-            return tpath[0]
-
-    def create_note(self, note, category, path):
+    def create_note(self, note, category):
         cat_id = self.create_category(category)
-        path_id = self.create_path(path)
 
-        self.cursor.execute(sql_add_note, [cat_id, path_id, note])
+        self.cursor.execute(sql_add_note, [cat_id, note])
         self.conn.commit()
 
         return self.cursor.lastrowid
 
-    def get_notes_by_path(self, path, recursive=False):
+    def get_all_notes(self):
         """
-        Gets notes for the given path. The recursive argument is to see
-        if we need to get subsequenced paths.
+        Gets all the stored notes
         """
+        self.cursor.execute(sql_get_all_notes)
+        return self.cursor.fetchall()
 
-        if recursive is True:
-            self.cursor.execute(sql_get_notes_by_path_recursive, [path])
-        else:
-            self.cursor.execute(sql_get_notes_by_path, [path])
-
+    def get_by_category(self, category):
+        """
+        Gets all notes for a category
+        """
+        self.cursor.execute(sql_get_by_cat, [category])
         return self.cursor.fetchall()
 
     def close(self):
         self.conn.close()
 
+# SQL Queries
+
 sql_create_notes = """
 CREATE  TABLE  IF NOT EXISTS "main"."NOTES" (
     "note_id" INTEGER PRIMARY KEY AUTOINCREMENT  NOT NULL  UNIQUE ,
-    "cat_id" INTEGER, "path_id" INTEGER NOT NULL,
+    "cat_id" INTEGER,
     "timestamp" DATETIME NOT NULL  DEFAULT CURRENT_TIMESTAMP,
     "content" TEXT)
 """
@@ -82,54 +70,31 @@ CREATE  TABLE "main"."CATEGORIES" (
     "content" TEXT DEFAULT "no_cat")
 """
 
-sql_create_paths = """
-CREATE  TABLE "main"."PATHS" (
-    "path_id" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL  UNIQUE ,
-    "path" TEXT DEFAULT "/")
-"""
-
 sql_add_note = """
-INSERT INTO "main"."NOTES" ("cat_id","path_id","content") VALUES (?,?,?)
+INSERT INTO "main"."NOTES" ("cat_id","content") VALUES (?,?)
 """
 
 sql_add_category = """
 INSERT INTO "main"."CATEGORIES" ("content") VALUES (?)
 """
 
-sql_add_path = """
-INSERT INTO "main"."PATHS" ("path") VALUES (?)
-"""
-
 sql_get_category = """
 SELECT * FROM "main"."CATEGORIES" WHERE "content" = ?
 """
 
-sql_get_path = """
-SELECT * FROM "main"."PATHS" WHERE "path" = ?
+sql_get_all_notes = """
+SELECT N.note_id, C.content, N.content, N.timestamp FROM NOTES N, CATEGORIES C
+WHERE
+    N.cat_id = C.cat_id
+    GROUP BY
+    C.cat_id;
 """
 
-sql_get_notes_by_path = """
-SELECT
-    N.content, C.content
-FROM
-    NOTES  N, PATHS P, CATEGORIES C
+sql_get_by_cat = """
+SELECT N.note_id, C.content, N.content, N.timestamp FROM NOTES N, CATEGORIES C
 WHERE
-    P.path_id = N.path_id AND
-    C.cat_id = N.cat_id AND
-    P.path = ?
-GROUP BY
-    N.cat_id;
-"""
-
-sql_get_notes_by_path_recursive = """
-SELECT
-    N.content, C.content
-FROM
-    NOTES  N, PATHS P, CATEGORIES C
-WHERE
-    P.path_id = N.path_id AND
-    C.cat_id = N.cat_id AND
-    P.path LIKE ?
-GROUP BY
-    N.cat_id;
+    N.cat_id = C.cat_id AND
+    C.content = ?
+    GROUP BY
+    C.cat_id;
 """

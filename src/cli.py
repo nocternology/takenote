@@ -1,71 +1,58 @@
 #!/bin/python
 
 import argparse
+import notes
 
-
-# def parse_args():
-#     """
-#     Parses the arguments
-#     """
-#     parser = argparse.ArgumentParser()
-#     list_parser = argparse.ArgumentParser(add_help=False)
-#     group_actions = parser.add_mutually_exclusive_group()
-#
-#     group_actions.add_argument(
-#         "-r", "--remove", help="removes a note", action="store_true")
-#     group_actions.add_argument(
-#         "-m", "--modify", help="modifies a note", action="store_true")
-#     group_actions.add_argument(
-#         "-a", "--add", help="adds a note", action="store_true")
-#     group_actions.add_argument(
-#         "-n", "--note", help="the note you want to add/remove/modify",
-#         type=str)
-#
-#     parser.add_argument(
-#         "-l", "--list", help="list notes for current path",
-#         action="store_true")
-#     parser.add_argument(
-#         "-lr", "--listrecursive", help="list notes for current path \
-#         and subpaths", action="store_true")
-#
-#     args = parser.parse_args()
-
-#
-#     return args
 
 def parse_args():
     """
     Parses the arguments
     """
+
     parser = argparse.ArgumentParser()
 
-    subparsers = parser.add_subparsers(help='commands')
+    subparsers = parser.add_subparsers(help='commands', dest='subparser')
 
     # List notes
     list_parser = subparsers.add_parser('list', help='List notes')
     list_parser.add_argument(
-        '-lr', action='store_true', help='Lists notes recursively')
+        '-c', '--cat', action='store', help='Category of notes to list')
+    list_parser.add_argument(
+        '-a', '--all', action='store_true', help='All stored notes')
 
     # Add note
     add_parser = subparsers.add_parser('add', help='Add note')
     add_parser.add_argument(
-        '-c', action='store', help='Specifies a category for the note (TODO, \
-        FIXME, ...)')
+        '-c', '--cat', action='store', help='Category of the new note')
     add_parser.add_argument(
-        'note', action='store', help='Note to be added')
+        '-n', '--note', action='store', help='Note to be added')
 
     # Delete note
     del_parser = subparsers.add_parser('del', help='Deletes a note')
     del_parser.add_argument(
-        'note', action='store', help='Hash of the note to be deleted')
+        '-n', '--note', action='store', help='Hash of the note to be deleted')
+    del_parser.add_argument(
+        '-c', '--cat', action='store', help='Delete a whole category')
 
-    results = parser.parse_args()
+    args = parser.parse_args()
 
-    return results
+    parse_callback(args)
+
+    return args
 
 
-def parse_add_note():
+def parse_callback(args):
     """
-    Generates the subsequencial calls when a -a command is issued
+    Callback to handle correct function call of command line
     """
-    pass
+
+    if (args.subparser == 'list'):
+        if args.all is True:
+            notes.list_all_notes()
+        if args.cat is not None:
+            notes.list_by_category(args.cat)
+
+    if (args.subparser == 'del'):
+        pass
+    if (args.subparser == 'add'):
+        notes.add_note(args.note, args.cat)
