@@ -9,5 +9,4 @@ DEFAULT_DB_FILE = "/home/nocternology/Work/takenote/notes.sqlite"
 
 
 if __name__ == '__main__':
-    # Debugging
-    print cli.parse_args()
+    cli.parse_args()
