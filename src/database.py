@@ -1,4 +1,5 @@
 import sqlite3
+import helpers
 
 
 class DBWrapper():
@@ -7,18 +8,44 @@ class DBWrapper():
     Database wrapper for notes operations
     """
 
-    def __init__(self, dbfile='notes.sqlite'):
+    def __init__(self, dbfile='.takenote.sqlite'):
+        """
+        Classical init that starts by opening a connection to the DB
+        """
         self.db_open(dbfile)
 
-    def db_open(self, file):
-        self.conn = sqlite3.connect(file)
-        self.cursor = self.conn.cursor()
+    def db_open(self, dbfile):
+        """
+        Actually opens the DB file while getting the fullpath and checking
+        if it is a new DB or not (to create it if yes)
+        """
+        new = False
+        dbpath = helpers.expand_to_home(dbfile)
+        try:
+            if (helpers.check_file(dbpath) == False):
+                # Check if we have to create the base
+                new = True
+            self.conn = sqlite3.connect(dbpath)
+            self.cursor = self.conn.cursor()
+
+            if (new):
+                self.db_create()
+
+        except Exception as e:
+            helpers.fatal_exit()
 
     def db_create(self):
+        """
+        Creates the tables for takenote
+        """
         self.cursor.execute(sql_create_notes)
         self.cursor.execute(sql_create_categories)
 
     def create_category(self, category):
+        """
+        Creates a category. Starts by checking if the category already exists
+        or not
+        """
         self.cursor.execute(sql_get_category, [category])
         tcat = self.cursor.fetchone()
 
@@ -30,6 +57,9 @@ class DBWrapper():
             return tcat[0]
 
     def create_note(self, note, category):
+        """
+        Adds a note by the given category
+        """
         cat_id = self.create_category(category)
 
         self.cursor.execute(sql_add_note, [cat_id, note])

@@ -9,6 +9,7 @@ UNKNOWN_ERROR = "Something went very wrong ..."
 ERROR_CATEGORY = "Category doesn't exist :/"
 CATEGORY_DELETED = "Category deleted !"
 
+
 db_handler = database.DBWrapper()
 
 
@@ -78,12 +79,12 @@ def pretty_print(list):
     """
     Pretifies the printing of the notes
     """
-    print "ID\tTimestamp\t\tCategory\tNote"
-    print "--\t---------\t\t--------\t----"
-
     if (len(list) == 0):
         print EMPTY_LIST_ERROR
         return False
+
+    print "ID\tTimestamp\t\tCategory\tNote"
+    print "--\t---------\t\t--------\t----"
 
     for note in list:
         print "%s\t%s\t%s\t\t%s" % (note[0], note[3], note[1], note[2])
