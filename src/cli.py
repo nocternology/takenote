@@ -49,7 +49,7 @@ def parse_callback(args):
         elif args.cat is not None:
             notes.list_by_category(args.cat)
         else:
-            print "Nothing to do ..."
+            notes.list_all_notes()
 
     if (args.subparser == 'del'):
         if args.cat is not None:

@@ -51,6 +51,25 @@ class DBWrapper():
         self.cursor.execute(sql_get_by_cat, [category])
         return self.cursor.fetchall()
 
+    def delete_category(self, category):
+        """
+        Deletes a hole category
+        """
+        self.cursor.execute(sql_get_category, [category])
+        tcat = self.cursor.fetchone()
+
+        if tcat is None:
+            return -1
+        else:
+            try:
+                self.cursor.execute(sql_delete_category_notes, [tcat[0]])
+                self.cursor.execute(sql_delete_category, [tcat[0]])
+                self.conn.commit()
+
+                return 0
+            except Exception as e:
+                return 1
+
     def close(self):
         self.conn.close()
 
@@ -98,4 +117,12 @@ WHERE
     C.content = ?
     GROUP BY
     C.cat_id;
+"""
+
+sql_delete_category = """
+DELETE FROM CATEGORIES WHERE CATEGORIES.cat_id = ?
+"""
+
+sql_delete_category_notes = """
+DELETE FROM NOTES WHERE NOTES.cat_id = ?
 """

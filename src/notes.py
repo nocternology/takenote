@@ -5,6 +5,8 @@ EMPTY_LIST_ERROR = "Nothing to list :/"
 EMPTY_NOTE_ERROR = "Your note is empty :/"
 NOTE_ADDED = "Your note has been added !"
 UNKNOWN_ERROR = "Something went very wrong ..."
+ERROR_CATEGORY = "Category doesn't exist :/"
+CATEGORY_DELETED = "Category deleted !"
 
 db_handler = database.DBWrapper()
 
@@ -40,6 +42,23 @@ def add_note(note, category):
         print UNKNOWN_ERROR
 
 
+def delete_category(category):
+    """
+    Deletes a hole category
+    """
+    return_code = db_handler.delete_category(category)
+
+    if (return_code == -1):
+        print ERROR_CATEGORY
+        return False
+    if (return_code == 0):
+        print CATEGORY_DELETED
+        return True
+    else:
+        print UNKNOWN_ERROR
+        return False
+
+
 def pretty_print(list):
     """
     Pretifies the printing of the notes
@@ -52,4 +71,5 @@ def pretty_print(list):
         return False
 
     for note in list:
-        print str(note[0]) + "\t" + note[3] + "\t" + note[1] + "\t\t" + note[2]
+        print "%s\t%s\t%s\t\t%s" % (note[0], note[3], note[1], note[2])
+        # print str(note[0]) + "\t" + note[3] + "\t" + note[1] + "\t\t" + note[2]
