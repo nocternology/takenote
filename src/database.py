@@ -86,8 +86,9 @@ sql_get_all_notes = """
 SELECT N.note_id, C.content, N.content, N.timestamp FROM NOTES N, CATEGORIES C
 WHERE
     N.cat_id = C.cat_id
-    GROUP BY
-    C.cat_id;
+ORDER BY
+    C.cat_id
+    DESC;
 """
 
 sql_get_by_cat = """
