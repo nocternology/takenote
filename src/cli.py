@@ -8,9 +8,8 @@ def parse_args():
     """
     Parses the arguments
     """
-
+    # Parsers declaration
     parser = argparse.ArgumentParser()
-
     subparsers = parser.add_subparsers(help='commands', dest='subparser')
 
     # List notes
@@ -34,11 +33,9 @@ def parse_args():
     del_parser.add_argument(
         '-c', '--cat', action='store', help='Delete a whole category')
 
+    # Actual parsing
     args = parser.parse_args()
-
     parse_callback(args)
-
-    return args
 
 
 def parse_callback(args):
@@ -49,10 +46,18 @@ def parse_callback(args):
     if (args.subparser == 'list'):
         if args.all is True:
             notes.list_all_notes()
-        if args.cat is not None:
+        elif args.cat is not None:
             notes.list_by_category(args.cat)
+        else:
+            print "Nothing to do ..."
 
     if (args.subparser == 'del'):
-        pass
+        if args.cat is not None:
+            notes.delete_category(args.cat)
+        elif args.note is not None:
+            notes.delete_note(args.note)
+        else:
+            print "Nothing to do ..."
+
     if (args.subparser == 'add'):
         notes.add_note(' '.join(args.note), args.cat)
