@@ -70,11 +70,24 @@ class DBWrapper():
             except Exception as e:
                 return 1
 
+    def delete_note(self, note):
+        """
+        Deletes a note given its ID
+        """
+        try:
+            self.cursor.execute(sql_delete_note, [note])
+            self.conn.commit()
+
+            return 0
+        except Exception as e:
+            print e.message
+            return -1
+
     def close(self):
         self.conn.close()
 
-# SQL Queries
 
+# SQL Queries
 sql_create_notes = """
 CREATE  TABLE  IF NOT EXISTS "main"."NOTES" (
     "note_id" INTEGER PRIMARY KEY AUTOINCREMENT  NOT NULL  UNIQUE ,
@@ -125,4 +138,8 @@ DELETE FROM CATEGORIES WHERE CATEGORIES.cat_id = ?
 
 sql_delete_category_notes = """
 DELETE FROM NOTES WHERE NOTES.cat_id = ?
+"""
+
+sql_delete_note = """
+DELETE FROM NOTES WHERE NOTES.note_id = ?
 """

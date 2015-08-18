@@ -4,6 +4,7 @@ import database
 EMPTY_LIST_ERROR = "Nothing to list :/"
 EMPTY_NOTE_ERROR = "Your note is empty :/"
 NOTE_ADDED = "Your note has been added !"
+NOTE_DELETED = "Your note has been deleted !"
 UNKNOWN_ERROR = "Something went very wrong ..."
 ERROR_CATEGORY = "Category doesn't exist :/"
 CATEGORY_DELETED = "Category deleted !"
@@ -53,6 +54,20 @@ def delete_category(category):
         return False
     if (return_code == 0):
         print CATEGORY_DELETED
+        return True
+    else:
+        print UNKNOWN_ERROR
+        return False
+
+
+def delete_note(note_id):
+    """
+    Deletes a note given its ID
+    """
+    return_code = db_handler.delete_note(note_id)
+
+    if (return_code == 0):
+        print NOTE_DELETED
         return True
     else:
         print UNKNOWN_ERROR
