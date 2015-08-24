@@ -2,7 +2,7 @@
 
 # TakeNote : Take notes of anything without exiting your termina
 
-__author__ "nocternology"
+__author__ = "nocternology"
 __email__ = "nocternology@gmail.com"
 __version__ = "1.0"
 
