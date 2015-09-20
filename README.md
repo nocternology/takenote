@@ -1,5 +1,6 @@
 # Takenote
-Takenote is CLI utility that let's you take notes based on the path you are in !
+Takenote is a CLI utility to take notes without leaving your terminal !
+
 Takenote will automatically create a DB file in your home directory. 
 You can add, remove and list notes for now.
 
