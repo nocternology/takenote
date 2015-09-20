@@ -1,5 +1,45 @@
 # Takenote
 Takenote is CLI utility that let's you take notes based on the path you are in !
+Takenote will automatically create a DB file in your home directory. 
+You can add, remove and list notes for now.
+
+Any help, comments or PR are welcome :)
+
+# Install
+Clone the repo somewhere on your computer
+```
+git clone https://github.com/nocternology/takenote.git
+```
+Make the 'takenote' script executable
+```
+chmod +x takenote
+```
+Drop a link into one of your path's directories
+```
+ln -s /where/you/cloned/the/repo/takenote /one/of/your/path's/directories/takenote
+```
+for example : 
+```
+ln -s /home/user/takenote/takenote /usr/bin/takenote
+```
+
+# Use examples
+## Listing your notes
+```
+takenote list # Lists all of your notes
+takenote list -c TODO # Lists all notes under the "TODO" category
+```
+## Adding a note
+```
+takenote add Merge branch "dev" with "master" after fixing the typo # Adds a note under the "DEFAULT" category
+takenote add -c TODO Do the stuff about the thing # Adds the note under the given category (TODO)
+```
+## Deleting a note
+```
+takenote del -c TODO # Delete all notes under the "TODO" category
+takenote add -n 19 # Delete the note with the ID 19 (IDs are listed with the list command)
+```
+
 
 # License
 The MIT License (MIT)
